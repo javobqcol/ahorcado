@@ -7,7 +7,8 @@ function myFunction() {
 }
 
 var botonpalabra = document.querySelector("#nueva-palabra");
-var lista = ["VECES", "EMBARGO", "PARTIDO", "ESPERPENTO", "SISTEMAS", "PUNTO", "NUESTRO", "CAMPO"];
+var botoniniciar = document.querySelector("#iniciar-juego");
+var lista = ["VECES", "EMBARGO", "PARTIDO", "ESPERPENTO", "SISTEMAS", "PUNTO", "NUESTRO", "CAMPO", "SALIDA", "INFLUJO", "SOTERRADO"];
 var palabra = ""
 
 var canvas = document.getElementById("ahorcado");
@@ -15,6 +16,21 @@ var ctx = canvas.getContext("2d");
 ctx.lineWidth = 3
 var arraycadena = []
 var arrayobjetivo = []
+var juego = false;
+var listacaracteres = "";
+var cadenachueca = "";
+var contadorjuego = 0;
+const maximointento = 6;
+
+function inicializar(){
+    arraycadena = []
+    arrayobjetivo = []
+    juego = false;
+    listacaracteres = "";
+    cadenachueca = "";
+    contadorjuego = 0;
+}
+
 
 botonpalabra.addEventListener("click",function(event){
     event.preventDefault();
@@ -30,11 +46,6 @@ function palabraAleatoria(lista){
 }
 
 
-var botoniniciar = document.querySelector("#iniciar-juego");
-var juego = false;
-var listacaracteres = "";
-var contadorjuego = 0;
-const maximointento = 6;
 botoniniciar.addEventListener("click",function(event){
     event.preventDefault();
     palabra = palabraAleatoria(lista);
@@ -85,6 +96,9 @@ function pintarletras(){
 
 function pintarahorcado(numero){
     console.log(numero);
+    ctx.fillStyle="green";
+    ctx.font="bold italic 25px arial";
+    ctx.fillText(cadenachueca, 400, 430);
     if (numero == 1){
         ctx.moveTo(220, 460);
         ctx.arc(200, 460, 20,0, 2 * Math.PI);
@@ -121,13 +135,14 @@ document.onkeypress = function(e) {
             var acierto = false;
             for (var i = 0; i<arraycadena.length; i++){
                 if (arraycadena[i] == key_press){
-                    arrayblanco[i] = key_press
-                    acierto = true
+                    arrayblanco[i] = key_press;
+                    acierto = true;
                 }
             }
             if (! acierto ){
                 console.log("ahorcado");
                 contadorjuego ++;
+                cadenachueca += key_press;
                 pintarahorcado(contadorjuego);           
             }else{
                 console.log(arrayblanco);
@@ -137,6 +152,9 @@ document.onkeypress = function(e) {
             console.log(arrayblanco.join(""));
             if (arrayblanco.join("") == arraycadena.join("")){
                 console.log("ganaste se termino finito");
+                ctx.fillStyle="black";
+                ctx.font="bold italic 25px arial";
+                ctx.fillText("Ganaste!", 200, 600);
             }
             if (contadorjuego >= maximointento){
                 console.log("te acabaste cavoevela");
