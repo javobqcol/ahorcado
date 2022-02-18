@@ -20,12 +20,24 @@ var juego = false;
 var listacaracteres = "";
 var cadenachueca = "";
 var contadorjuego = 0;
+var arraycadena = []
+var arrayobjetivo = []
+var juego = false;
+var listacaracteres = "";
+var cadenachueca = "";
+var contadorjuego = 0;
 const maximointento = 6;
 
-function inicializar(){
+function reinicia(){
+    palabra = ""
+    arraycadena = []
+    arrayobjetivo = [] 
+    juego = false;
+    listacaracteres = "";
+    cadenachueca = "";
+    contadorjuego = 0;
     arraycadena = []
     arrayobjetivo = []
-    juego = false;
     listacaracteres = "";
     cadenachueca = "";
     contadorjuego = 0;
@@ -48,8 +60,11 @@ function palabraAleatoria(lista){
 
 botoniniciar.addEventListener("click",function(event){
     event.preventDefault();
+    
+    document.onkeydown= teclas;
+
     palabra = palabraAleatoria(lista);
-    console.log(palabra);
+    console.log(lista);
     juego=true;
     window.scroll({
         top: 700,
@@ -123,45 +138,59 @@ function pintarahorcado(numero){
     ctx.stroke();
 }
 
-document.onkeypress = function(e) {
-   if (juego){
-        const expr = new RegExp("[^A-Za-z]", 'g')
-        var key_press = e.key.toUpperCase().replace(expr, "");
-        var contador = 0;
-        console.log(key_press);      
-        console.log(listacaracteres.search(key_press));      
-        if (listacaracteres.search(key_press) == -1){
-            listacaracteres += key_press;
-            var acierto = false;
-            for (var i = 0; i<arraycadena.length; i++){
-                if (arraycadena[i] == key_press){
-                    arrayblanco[i] = key_press;
-                    acierto = true;
-                }
-            }
-            if (! acierto ){
-                console.log("ahorcado");
-                contadorjuego ++;
-                cadenachueca += key_press;
-                pintarahorcado(contadorjuego);           
-            }else{
-                console.log(arrayblanco);
-                pintarletras(contador);
-            }
-            console.log(arraycadena.join(""));
-            console.log(arrayblanco.join(""));
-            if (arrayblanco.join("") == arraycadena.join("")){
-                console.log("ganaste se termino finito");
-                ctx.fillStyle="black";
-                ctx.font="bold italic 25px arial";
-                ctx.fillText("Ganaste!", 200, 600);
-            }
-            if (contadorjuego >= maximointento){
-                console.log("te acabaste cavoevela");
-                juego=false;
-            }
-        }   
-    }
+function final(){
+    setTimeout(function() {
+        window.scroll(0,0);
+        ctx.width = ctx.width;
+        reiniciar();
+    }, 2000);
 }
 
-
+function teclas(event){
+    const expr = new RegExp("[^A-Za-z]", 'g')
+    var key_press = String.fromCharCode(event.keyCode).toUpperCase().replace(expr, "");
+    var contador = 0;
+    console.log(key_press);
+    console.log(key_press);      
+    console.log(listacaracteres.search(key_press));      
+    if (listacaracteres.search(key_press) == -1){
+        listacaracteres += key_press;
+        var acierto = false;
+        for (var i in arraycadena){
+            if (arraycadena[i] == key_press){
+                arrayblanco[i] = key_press;
+                acierto = true;
+            }
+        }
+        if (! acierto ){
+            console.log("ahorcado");
+            contadorjuego ++;
+            cadenachueca += key_press;
+            pintarahorcado(contadorjuego);           
+        }else{
+            console.log(arrayblanco);
+            pintarletras(contador);
+        }
+        console.log(arraycadena.join(""));
+        console.log(arrayblanco.join(""));
+        if (arrayblanco.join("") == arraycadena.join("")){
+            console.log("ganaste se termino finito");
+            ctx.fillStyle="black";
+            ctx.font="bold italic 25px arial";
+            ctx.fillText("Ganaste!", 200, 600);
+            setTimeout(function() {
+                window.scroll(0,0);
+                location.reload( );
+            }, 2000);
+        }
+        if (contadorjuego >= maximointento){
+            ctx.fillStyle="red";
+            ctx.font="bold italic 25px arial";
+            ctx.fillText("Perdiste!  :(", 200, 600);
+            setTimeout(function() {
+                window.scroll(0,0);
+                on.reload( );
+            }, 2000);
+        }
+    }   
+}
